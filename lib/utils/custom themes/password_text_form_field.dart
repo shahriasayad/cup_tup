@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class PasswordTextFormField extends StatefulWidget {
   final String hintText;
+  final TextEditingController controller;
 
   const PasswordTextFormField({
     super.key,
     required this.hintText,
+    required this.controller,
   });
 
   @override
@@ -26,13 +28,11 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
     return Container(
       height: 60,
       child: TextFormField(
+        controller: widget.controller,
         obscureText: _obscureText,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 14
-          ),
+          hintStyle: TextStyle(color: Colors.black, fontSize: 14),
           prefixIcon: Icon(
             Icons.password,
             color: Colors.green,

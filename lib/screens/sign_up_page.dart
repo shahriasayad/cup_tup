@@ -4,15 +4,53 @@ import 'package:get/get.dart';
 import '../utils/custom themes/custom_button.dart';
 import '../utils/custom themes/password_text_form_field.dart';
 import '../utils/custom themes/text_field_theme.dart';
+import 'package:hive/hive.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LogInScreen extends StatefulWidget {
+  const LogInScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LogInScreen> createState() => _LogInScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _LogInScreenState extends State<LogInScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+
+  late Box loginBox;
+
+  @override
+  void initState() {
+    super.initState();
+    createBox();
+  }
+
+  void createBox() async {
+    loginBox = await Hive.openBox('loginBox');
+  }
+
+  void handleLogin() async {
+    final username = userNameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Please fill in all fields",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    await loginBox.put('username', username);
+    await loginBox.put('email', email);
+    await loginBox.put('password', password);
+
+    Get.offAll(() => const DashBoardScreen());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,30 +77,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
+                            const Text(
                               "Log in",
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 25),
+                            const SizedBox(height: 25),
                             CustomTextFormField(
+                              controller: userNameController,
                               hintText: "user name",
                               icon: Icons.person,
                             ),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
                             CustomTextFormField(
+                              controller: emailController,
                               hintText: "email address",
                               icon: Icons.email,
                             ),
-                            SizedBox(height: 15),
-                            PasswordTextFormField(hintText: 'Password'),
-                            SizedBox(height: 15),
+                            const SizedBox(height: 15),
+                            PasswordTextFormField(
+                              controller: passwordController,
+                              hintText: 'Password',
+                            ),
+                            const SizedBox(height: 15),
+
+                            // ////////
                             CustomButton(
                               buttonText: 'Log in',
-                              onPressed: () {
-                                Get.to(DashBoardScreen());
+                              onPressed: () async {
+                                // Validate that all fields are filled
+                                if (userNameController.text.isNotEmpty &&
+                                    emailController.text.isNotEmpty &&
+                                    passwordController.text.isNotEmpty) {
+                                  // Save user data to Hive
+                                  await loginBox.put(
+                                      'username', userNameController.text);
+                                  await loginBox.put(
+                                      'email', emailController.text);
+                                  await loginBox.put(
+                                      'password', passwordController.text);
+                                  await loginBox.put(
+                                      'isLoggedIn', true); // Save login state
+
+                                  // Navigate to the dashboard screen
+                                  Get.offAll(() => const DashBoardScreen());
+                                } else {
+                                  // Show an error message if any field is empty
+                                  Get.snackbar(
+                                    "Error",
+                                    "Please fill in all fields",
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                }
                               },
                             ),
                           ],

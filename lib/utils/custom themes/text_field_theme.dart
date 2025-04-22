@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatelessWidget {
   final IconData icon;
   final String hintText;
+  final TextEditingController controller;
 
   const CustomTextFormField({
     super.key,
     required this.icon,
     required this.hintText,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       cursorColor: Colors.green,
       decoration: InputDecoration(
         prefixIcon: Icon(
