@@ -48,7 +48,7 @@ class _LogInScreenState extends State<LogInScreen> {
     await loginBox.put('email', email);
     await loginBox.put('password', password);
 
-    Get.offAll(() => const DashBoardScreen());
+    Get.offAll(() => DashBoardScreen());
   }
 
   @override
@@ -122,7 +122,7 @@ class _LogInScreenState extends State<LogInScreen> {
                                       'isLoggedIn', true); // Save login state
 
                                   // Navigate to the dashboard screen
-                                  Get.offAll(() => const DashBoardScreen());
+                                  Get.offAll(() => DashBoardScreen());
                                 } else {
                                   // Show an error message if any field is empty
                                   Get.snackbar(

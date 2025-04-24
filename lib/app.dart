@@ -11,7 +11,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: "Cup Tup",
       debugShowCheckedModeBanner: false,
-      home: const SignUpScreen(), // this should work now
+      home: const LogInScreen(), // this should work now
     );
   }
 }

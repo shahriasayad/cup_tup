@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cup_tub/app.dart'; // Your App widget file
+import 'package:cup_tub/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +11,8 @@ void main() async {
 
   // Open the box before running the app
   await Hive.openBox('loginBox');
+  await Hive.openBox('salesBox');
+  await Hive.openBox('userBox');
 
   runApp(App());
 }
