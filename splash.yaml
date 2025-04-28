@@ -1,0 +1,12 @@
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logos/green-tea.png
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/logos/green-tea.png
+  android_12:
+    color: "#FFFFFF"
+    image: assets/logos/green-tea.png
+  web: false

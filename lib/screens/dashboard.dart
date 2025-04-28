@@ -2,8 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
-class DashBoardScreen extends StatelessWidget {
+class DashboardScreen extends StatelessWidget {
   final salesBox = Hive.box('salesBox');
+
+  final List<String> itemNames = [
+    'Chips',
+    'Cookies',
+    'Popcorn',
+    'Tea',
+    'Coffee',
+    'Juice',
+  ];
+
+  final List<String> itemIcons = [
+    'assets/icons/chips.png',
+    'assets/icons/cookie.png',
+    'assets/icons/popcorn.png',
+    'assets/icons/tea.png',
+    'assets/icons/coffee-cup.png',
+    'assets/icons/orange-juice.png',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -16,22 +34,15 @@ class DashBoardScreen extends StatelessWidget {
         children: [
           Expanded(
             child: GridView.builder(
-              padding: EdgeInsets.all(10),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
-              itemCount: 6,
+              itemCount: itemNames.length,
               itemBuilder: (context, index) {
-                final itemName = [
-                  'Chips',
-                  'Cookies',
-                  'Popcorn',
-                  'Tea',
-                  'Coffee',
-                  'Juice'
-                ][index];
+                final itemName = itemNames[index];
                 final totalSold =
                     salesBox.get('$itemName-sold', defaultValue: 0);
                 final totalAmount =
@@ -47,10 +58,10 @@ class DashBoardScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          index < 3 ? Icons.fastfood : Icons.local_cafe,
-                          size: 40,
-                          color: Colors.black,
+                        Image.asset(
+                          itemIcons[index],
+                          height: 50,
+                          width: 50,
                         ),
                         SizedBox(height: 10),
                         Text('Total Sold: $totalSold'),

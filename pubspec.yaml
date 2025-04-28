@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  flutter_native_splash: ^2.4.0
   smooth_page_indicator: ^1.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -28,22 +27,15 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/logos/Screenshot 2025-04-19 010051.png
+    - assets/logos/green-tea.png
+    - assets/icons/chips.png
+    - assets/icons/coffee-cup.png
+    - assets/icons/cookie.png
+    - assets/icons/orange-juice.png
+    - assets/icons/popcorn.png
+    - assets/icons/tea.png
 
 
+    
 
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+

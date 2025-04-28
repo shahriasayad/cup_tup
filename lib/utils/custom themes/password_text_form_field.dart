@@ -51,19 +51,19 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(
-              color: Colors.green,
+              color: Color(0xFF1397D5),
               width: 2.0,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(
-              color: Color(0xFF1397D5),
+              color: Colors.green,
               width: 1.5,
             ),
           ),
           filled: true,
-          fillColor: Colors.green.withOpacity(0.1),
+          fillColor: Colors.green.withOpacity(0),
           contentPadding: EdgeInsets.symmetric(
               horizontal: 16.0, vertical: 20.0), // Adjust padding
         ),
