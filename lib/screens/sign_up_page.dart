@@ -67,26 +67,14 @@ class LogInScreen extends StatelessWidget {
                             SizedBox(height: 28),
                             CustomButton(
                               buttonText: "LOGIN",
-                              onPressed: (() {
+                              onPressed: () {
                                 String username =
                                     usernameController.text.trim();
                                 String email = emailController.text.trim();
                                 String password =
                                     passwordController.text.trim();
 
-                                if (username == 'tawaf' &&
-                                    password == 'cuptup' &&
-                                    email == 'tawaf@gmail.com') {
-                                  loginBox.put('isLoggedIn', true);
-                                  Get.offAllNamed('/dashboard');
-                                } else {
-                                  Get.snackbar(
-                                    "Error",
-                                    "Please fill in all fields",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-
+                                // 🛑 First, check for empty fields
                                 if (username.isEmpty ||
                                     email.isEmpty ||
                                     password.isEmpty) {
@@ -96,14 +84,29 @@ class LogInScreen extends StatelessWidget {
                                   return;
                                 }
 
-                                // Save login status and user info in Hive
-                                loginBox.put('isLoggedIn', true);
-                                loginBox.put('username', username);
-                                loginBox.put('email', email);
-                                loginBox.put('password', password);
+                                // ✅ Now check if credentials are correct
+                                if (username == 'tawaf' &&
+                                    password == 'cuptup' &&
+                                    email == 'tawaf@gmail.com') {
+                                  // Open or access userBox
+                                  final userBox = Hive.box('userBox');
 
-                                Get.offAllNamed('/dashboard');
-                              }),
+                                  // Save user data in Hive
+                                  userBox.put('username', username);
+                                  userBox.put('email', email);
+
+                                  // Also mark login state
+                                  final loginBox = Hive.box('loginBox');
+                                  loginBox.put('isLoggedIn', true);
+
+                                  // Navigate to dashboard
+                                  Get.offAllNamed('/dashboard');
+                                } else {
+                                  Get.snackbar(
+                                      "Error", "Invalid login credentials",
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
                             ),
                           ],
                         ),
