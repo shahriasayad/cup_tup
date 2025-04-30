@@ -8,5 +8,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('loginBox');
   await Hive.openBox('salesBox');
+  await Hive.openBox('transactionsBox');
+  await Hive.openBox('userBox');
   runApp(App());
 }

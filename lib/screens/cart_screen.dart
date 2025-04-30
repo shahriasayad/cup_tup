@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class CartScreen extends StatelessWidget {
-  final salesBox = Hive.box('salesBox');
   final List<String> items = [
     'Chips',
     'Cookies',
@@ -24,6 +23,8 @@ class CartScreen extends StatelessWidget {
         .fold<int>(0, (sum, entry) => sum + (entry.value * prices[entry.key]));
 
     final TextEditingController collectedController = TextEditingController();
+    final salesBox = Hive.box('salesBox');
+    final transactionsBox = Hive.box('transactionsBox');
 
     return Scaffold(
       appBar: AppBar(
@@ -49,23 +50,17 @@ class CartScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 6.0),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                              borderRadius: BorderRadius.circular(8)),
                           tileColor: Color(0xFFF0FFF0),
-                          title: Text(
-                            items[index],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          title: Text(items[index],
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                           trailing: Text(
                             '${quantities[index]} x ${prices[index]} = ${quantities[index] * prices[index]} TK',
                             style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500,
-                            ),
+                                fontSize: 15,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                       );
@@ -84,35 +79,28 @@ class CartScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('VAT: 0 TK', style: TextStyle(fontSize: 16)),
+                    Text('VAT: 0 BDT', style: TextStyle(fontSize: 16)),
                     SizedBox(height: 5),
-                    Text('Discount: 0 TK', style: TextStyle(fontSize: 16)),
+                    Text('Discount: 0 BDT', style: TextStyle(fontSize: 16)),
                     Divider(height: 20, thickness: 1),
-                    Text(
-                      'Total Amount: $totalAmount TK',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    Text('Total Amount: $totalAmount BDT',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 12),
                     TextField(
                       controller: collectedController,
                       decoration: InputDecoration(
                         labelText: 'Collected Amount',
-                        labelStyle: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
+                        labelStyle:
+                            TextStyle(fontSize: 16, color: Colors.black87),
                         prefixIcon: Icon(Icons.money),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              BorderSide(color: Colors.green), // Normal state
+                          borderSide: BorderSide(color: Colors.green),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: Colors.green,
-                              width: 2), // When clicked/focused
+                          borderSide: BorderSide(color: Colors.green, width: 2),
                         ),
                       ),
                       keyboardType: TextInputType.number,
@@ -124,7 +112,7 @@ class CartScreen extends StatelessWidget {
                         final collected = int.tryParse(value.text) ?? 0;
                         final change = collected - totalAmount;
                         return Text(
-                          'Change: ${change > 0 ? change : 0} TK',
+                          'Change: ${change > 0 ? change : 0} BDT',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500),
                         );
@@ -138,6 +126,33 @@ class CartScreen extends StatelessWidget {
             CustomButton(
               buttonText: "DONE",
               onPressed: () {
+                // Save transaction to transactionsBox
+                final nextKey = transactionsBox.length;
+                final customerNumber = 'Customer ${nextKey + 1}';
+                final collected = int.tryParse(collectedController.text) ?? 0;
+                final change =
+                    collected > totalAmount ? collected - totalAmount : 0;
+
+                final transactionData = {
+                  'customerNumber': customerNumber,
+                  'saleTime': DateTime.now(),
+                  'items': [
+                    for (int i = 0; i < items.length; i++)
+                      if (quantities[i] > 0)
+                        {
+                          'name': items[i],
+                          'quantity': quantities[i],
+                          'price': prices[i],
+                          'subtotal': quantities[i] * prices[i],
+                        }
+                  ],
+                  'totalAmount': totalAmount,
+                  'amountPaid': collected,
+                  'changeGiven': change,
+                };
+                transactionsBox.put(nextKey, transactionData);
+
+                // Update aggregated data in salesBox
                 for (int i = 0; i < items.length; i++) {
                   if (quantities[i] > 0) {
                     final itemName = items[i];
@@ -153,6 +168,7 @@ class CartScreen extends StatelessWidget {
                 }
                 salesBox.put('totalProfit',
                     salesBox.get('totalProfit', defaultValue: 0) + totalAmount);
+
                 Get.offAllNamed('/dashboard');
               },
             ),
